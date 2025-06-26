@@ -17,33 +17,32 @@ const authenticate = async ({username, password}) => {
         error.status = 401
         throw error
     }
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET)
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'default_dev_secret')
     return { token }
 }
 
 const findUserByToken = async (token) => {
-    let id
-    try {
-        const payload = jwt.verify(token, process.env.JWT_SECRET)
-        id = payload.id
-    } catch (err) {
-        const error = Error('not authorized')
-        error.status = 401
-        throw error
+    const findUserByToken = async (token) => {
+        try {
+          const payload = jwt.verify(token, process.env.JWT);
+          const SQL = `
+          SELECT id, username 
+          FROM users 
+          WHERE id = $1`
+          
+          const response = await client.query(SQL, [payload.id]);
+          if (!response.rows.length) {
+            throw Error('not authorized');
+          }
+          return response.rows[0];
+        } catch (err) {
+          const error = Error('not authorized');
+          error.status = 401;
+          throw error;
+        }
     }
-    const SQL = `
-    SELECT id,
-    username FROM users
-    WHERE id = $1
-    `
-    const response = await client.query(SQL, [id])
-    if (!response.rows.length) {
-        const error = Error('not authorized')
-        error.status = 401
-        throw error
-    }
-    return response.rows[0]
 }
+      
 
 module.exports = {
     authenticate,

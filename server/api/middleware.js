@@ -11,4 +11,17 @@ const isLoggedIn = async (req, res, next) => {
     }
 }
 
-module.exports = { isLoggedIn }
+const isAdmin = (req, res, next) => {
+    if(req.user.is_admin) {
+        next()
+    } else {
+        const er = Error('must be admin')
+        er.status = 401
+        next(er)
+    }
+}
+
+module.exports = { 
+    isLoggedIn,
+    isAdmin 
+}

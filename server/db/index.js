@@ -1,6 +1,6 @@
 const client = require('./client')
-const { createUser } = require('./auth')
-const { fetchItems } = require('./items')
+const { createUser } = require('./user')
+const { fetchItems, createItem } = require('./items')
 const { createReview } = require('./reviews')
 const {v4} = require('uuid')
 const uuidv4 = v4
@@ -29,13 +29,25 @@ const seed = async()=> {
       user_id UUID REFERENCES users(id) ON DELETE CASCADE,
       item_id UUID REFERENCES users(id) ON DELETE CASCADE,
       text TEXT NOT NULL,
-      rating INTERGER CHECK (rating BETWEEN 1 AND 5),
+      rating INTEGER CHECK (rating BETWEEN 1 AND 5),
       created_at TIMESTAMP DEFAULT NOW(),
       updated_at TIMESTAMP DEFAULT NOW(),
       UNIQUE(user_id, item_id)
     );
   `
   await client.query(SQL)
+  const [car, airpods, iphone, laptop] = await Promise.all([
+    createItem({name: 'car'}),
+    createItem({name: 'airpods'}),
+    createItem({name: 'iphone'}),
+    createItem({name: 'laptop'})
+  ])
+
+  const [ thinh1, andy1324] = await Promise.all([
+    createUser({username: 'thinh1', password: 'thinhlai1324', is_admin: true}),
+    createUser({username: 'andy1324', password: 'andy_li', is_admin: false})
+  ])
+
   console.log('Tables created.')
 };
 

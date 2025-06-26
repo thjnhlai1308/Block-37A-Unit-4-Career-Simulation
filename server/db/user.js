@@ -4,19 +4,11 @@ const {v4} = require('uuid')
 const uuidv4 = v4
 
 
-const createUser = async (user) => {
-    if(!user.username.trim() || !user.password.trim()){
-        throw Error ('musthave username and password')
-    }
-    user.password = await bcrypt.hash(user.password, 5)
-    user.is_admin ? user.is_admin = user.is_admin : user.is_admin = false
-    const SQL = `
-        INSERT INTO users(id, username, password, is_admin)
-        VALUES ($1, $2, $3, $4)
-        RETURNING *
-    `
-    const response = await client.query(SQL, [uuidv4(), user.username, user.password, user.is_admin])
-    return response.rows[0]
+const createUser = async ({ username, password }) => {
+    const hash = await bcrypt.hash(password, 5);
+    const SQL = `INSERT INTO users(id, username, password) VALUES($1, $2, $3) RETURNING id, username`;
+    const response = await client.query(SQL, [uuidv4(), username, hash]);
+    return response.rows[0];
 }
 
 const fetchReviewsByUser = async (userId) => {

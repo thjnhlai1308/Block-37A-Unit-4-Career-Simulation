@@ -14,7 +14,8 @@ app.post('/register', async (req, res, next) => {
 
 app.post('/login', async (req, res, next) => {
     try {
-        res.send(await authenticate(req.body))
+        const token = await authenticate(req.body)
+        res.send(token)
     } catch (err) {
         next(err)
     }

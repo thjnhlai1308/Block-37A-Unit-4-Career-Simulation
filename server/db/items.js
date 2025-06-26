@@ -1,4 +1,16 @@
 const client = require('./client')
+const {v4} = require('uuid')
+const uuidv4 = v4
+
+const createItem = async (item) => {
+    const SQL = `
+        INSERT INTO items(id, name)
+        VALUES($1, $2)
+        RETURNING *
+    `
+    const response = await client.query(SQL, [uuidv4(), item.name])
+    return response.rows[0]
+}
 
 const fetchItems = async () => {
     const SQL = `
@@ -21,6 +33,7 @@ const fetchItemById = async (itemId) => {
 }
 
 module.exports = {
+    createItem,
     fetchItems,
     fetchItemById
 }

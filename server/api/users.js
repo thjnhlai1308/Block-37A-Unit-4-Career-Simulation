@@ -1,10 +1,10 @@
 const express =  require ('express')
 const app = express.Router()
-const { isLoggedIn } = require('./middleware')
+const { isLoggedIn, isAdmin } = require('./middleware')
 const { fetchReviewsByUser } = require('../db/user')
 const { updateReview, deleteReview } = require('../db/reviews')
 
-app.get('/me/reviews', isLoggedIn, async (req, res, next) => {
+app.get('/me/reviews', isLoggedIn, isAdmin, async (req, res, next) => {
     try {
         res.send(await fetchReviewsByUser(req.user.id));
     } catch (err) {
@@ -12,7 +12,7 @@ app.get('/me/reviews', isLoggedIn, async (req, res, next) => {
     }
   });
 
-app.put('/:userId/reviews/:reviewId', isLoggedIn, async (req, res, next) => {
+app.put('/:userId/reviews/:reviewId', isLoggedIn, isAdmin, async (req, res, next) => {
     try {
         if(req.user.id !== req.params.userId) {
             return res.status(403).send({ error: 'Not authorized' })
@@ -27,7 +27,7 @@ app.put('/:userId/reviews/:reviewId', isLoggedIn, async (req, res, next) => {
         next(err)
     }
 })
-app.delete('/:userId/reviews/:reviewId', isLoggedIn, async (req, res, next) => {
+app.delete('/:userId/reviews/:reviewId', isLoggedIn, isAdmin, async (req, res, next) => {
     try {
         if(req.user.id !== req.params.userId) {
             return res.status(403).send({ error: 'Not authorized' })
