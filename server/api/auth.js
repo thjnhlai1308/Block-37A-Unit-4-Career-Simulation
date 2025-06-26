@@ -1,6 +1,7 @@
-const express = reqiure('express')
+const express = require('express')
 const app = express.Router()
-const { createUser, authenticate, findUserByToken } = require('../db/auth')
+const { authenticate, findUserByToken } = require('../db/auth')
+const { createUser } = require('../db/user')
 const { isLoggedIn } = require('./middleware')
 
 app.post('/register', async (req, res, next) => {

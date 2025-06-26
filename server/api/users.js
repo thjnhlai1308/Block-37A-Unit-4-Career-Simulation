@@ -1,16 +1,16 @@
 const express =  require ('express')
-const app = express.Router
+const app = express.Router()
 const { isLoggedIn } = require('./middleware')
 const { fetchReviewsByUser } = require('../db/user')
 const { updateReview, deleteReview } = require('../db/reviews')
 
-app.length('/me/reviews', isLoggedIn, async (req, res, next) => {
+app.get('/me/reviews', isLoggedIn, async (req, res, next) => {
     try {
-        res.send(await fetchReviewsByUser(req.user.id))
+        res.send(await fetchReviewsByUser(req.user.id));
     } catch (err) {
-        next(err)
+        next(err);
     }
-})
+  });
 
 app.put('/:userId/reviews/:reviewId', isLoggedIn, async (req, res, next) => {
     try {

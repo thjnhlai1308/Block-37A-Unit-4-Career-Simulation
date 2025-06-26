@@ -1,9 +1,10 @@
 const client = require('./client')
-const { v4: uuidv4 } = require9('uuid')
+const {v4} = require('uuid')
+const uuidv4 = v4
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const createUser =  async ({ username, password }) => {
+const authenticate = async ({username, password}) => {
     const SQL = `
         SELECT * 
         FROM users
@@ -45,8 +46,6 @@ const findUserByToken = async (token) => {
 }
 
 module.exports = {
-    createUser,
     authenticate,
     findUserByToken
 }
-

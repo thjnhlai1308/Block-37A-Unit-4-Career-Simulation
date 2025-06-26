@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express.Router()
-const { isLoggedIn } = require('/middleware')
+const { isLoggedIn } = require('./middleware')
 const { fetchItem, fetchItemByItem } = require('../db/items')
 const {
     createReview,
